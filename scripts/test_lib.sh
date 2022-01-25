@@ -360,15 +360,19 @@ fi
 
 # tool_get_bin [tool] - returns absolute path to a tool binary (or returns error)
 function tool_get_bin {
-  tool_exists "gobin" "GO111MODULE=off go get github.com/myitcv/gobin" || return 2
+#  tool_exists "gobin" "GO111MODULE=off go get github.com/myitcv/gobin" || return 2
 
   local tool="$1"
   if [[ "$tool" == *"@"* ]]; then
     # shellcheck disable=SC2086
-    run gobin ${GOBINARGS:-} -p "${tool}" || return 2
+    # run gobin ${GOBINARGS:-} -p "${tool}" || return 2
+    run go install "${tool}" 
+    which "${tool}" 
   else
     # shellcheck disable=SC2086
-    run_for_module ./tools/mod run gobin ${GOBINARGS:-} -p -m --mod=readonly "${tool}" || return 2
+    # run_for_module ./tools/mod run gobin ${GOBINARGS:-} -p -m --mod=readonly "${tool}" || return 2
+    run_for_module ./tools/mod run go install --mod=readonly "${tool}" 
+    which "${tool}" 
   fi
 }
 
